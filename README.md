@@ -34,6 +34,3 @@ O sistema permite acompanhar movimentações mensais, controlar contas a pagar e
 </ul>
 
 ---
-
-  <li><strong>HTML, CSS e JavaScript:</strong> Estruturação, estilização e interatividade das páginas.</li><br>
-</ul>
