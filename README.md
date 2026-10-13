@@ -35,14 +35,5 @@ O sistema permite acompanhar movimentações mensais, controlar contas a pagar e
 
 ---
 
-## 🛠️ Tecnologias Utilizadas
-
-<ul>
-  <li><strong>PHP e Laravel:</strong> Desenvolvimento back-end e implementação das regras de negócio.</li><br>
-
-  <li><strong>MySQL / MariaDB:</strong> Armazenamento e gerenciamento dos dados financeiros.</li><br>
-
-  <li><strong>Blade:</strong> Construção das interfaces dinâmicas e integração com o Laravel.</li><br>
-
   <li><strong>HTML, CSS e JavaScript:</strong> Estruturação, estilização e interatividade das páginas.</li><br>
 </ul>
