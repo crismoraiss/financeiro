@@ -12,7 +12,7 @@ use App\Models\GoalTransaction;
 class DashboardController extends Controller
 {
 
-// método responsável por buscar e calcular todos os dados exibidos na página inicial
+    // método responsável por buscar e calcular todos os dados exibidos na página inicial
     public function index()
     {
         // controla qual mês e ano o dash vai exibir, caso nenhum seja selecionado vai utilizar o mês/ano atuais
@@ -84,12 +84,7 @@ class DashboardController extends Controller
 
 
 
-/*
-|--------------------------------------------------------------------------
-| SALDO DOS MESES ANTERIORES
-|--------------------------------------------------------------------------
-*/
-
+        /* saldo do mês anterior*/
         // soma todas as receitas recebidas antes do mês selecionado
         $previousIncomes = Income::whereDate(
             'received_at',
@@ -111,76 +106,61 @@ class DashboardController extends Controller
 
 
 
+        // soma todo o dinheiro guardado em metas antes do mês selecionado
+        $previousGoalDeposits = GoalTransaction::where('type', 'deposit')
+            ->whereDate(
+                'transaction_date',
+                '<',
+                $selectedDate->copy()->startOfMonth()
+            )
+            ->sum('amount');
 
 
-
-
-
-// soma todo o dinheiro guardado em metas antes do mês selecionado
-$previousGoalDeposits = GoalTransaction::where('type', 'deposit')
-    ->whereDate(
-        'transaction_date',
-        '<',
-        $selectedDate->copy()->startOfMonth()
-    )
-    ->sum('amount');
-
-
-// soma todo o dinheiro retirado das metas antes do mês selecionado
-$previousGoalWithdrawals = GoalTransaction::where('type', 'withdrawal')
-    ->whereDate(
-        'transaction_date',
-        '<',
-        $selectedDate->copy()->startOfMonth()
-    )
-    ->sum('amount');
-
-
-
-
-
+        // soma todo o dinheiro retirado das metas antes do mês selecionado
+        $previousGoalWithdrawals = GoalTransaction::where('type', 'withdrawal')
+            ->whereDate(
+                'transaction_date',
+                '<',
+                $selectedDate->copy()->startOfMonth()
+            )
+            ->sum('amount');
 
 
         // calcula o saldo acumulado até o mês anterior
-$previousBalance =
-    $previousIncomes
-    - $previousPaidExpenses
-    - $previousGoalDeposits
-    + $previousGoalWithdrawals;
-
-/*
-|--------------------------------------------------------------------------
-| SALDO DO MÊS SELECIONADO
-|--------------------------------------------------------------------------
-*/
+        $previousBalance =
+            $previousIncomes
+            - $previousPaidExpenses
+            - $previousGoalDeposits
+            + $previousGoalWithdrawals;
 
 
-    // soma o dinheiro guardado nas metas durante o mês selecionado
-$monthGoalDeposits = GoalTransaction::where('type', 'deposit')
-    ->whereMonth('transaction_date', $month)
-    ->whereYear('transaction_date', $year)
-    ->sum('amount');
+
+        /* saldo do mês selecionado*/
+
+        // soma o dinheiro guardado nas metas durante o mês selecionado
+        $monthGoalDeposits = GoalTransaction::where('type', 'deposit')
+            ->whereMonth('transaction_date', $month)
+            ->whereYear('transaction_date', $year)
+            ->sum('amount');
 
 
-// soma o dinheiro retirado das metas durante o mês selecionado
-$monthGoalWithdrawals = GoalTransaction::where('type', 'withdrawal')
-    ->whereMonth('transaction_date', $month)
-    ->whereYear('transaction_date', $year)
-    ->sum('amount');
+        // soma o dinheiro retirado das metas durante o mês selecionado
+        $monthGoalWithdrawals = GoalTransaction::where('type', 'withdrawal')
+            ->whereMonth('transaction_date', $month)
+            ->whereYear('transaction_date', $year)
+            ->sum('amount');
 
 
-// calcula quanto sobrou das movimentações do mês selecionado
-$monthBalance =
-    $totalIncomes
-    - $paidExpenses
-    - $monthGoalDeposits
-    + $monthGoalWithdrawals;
+        // calcula quanto sobrou das movimentações do mês selecionado
+        $monthBalance =
+            $totalIncomes
+            - $paidExpenses
+            - $monthGoalDeposits
+            + $monthGoalWithdrawals;
 
-/*
-|--------------------------------------------------------------------------
-| SALDO DISPONÍVEL
-|--------------------------------------------------------------------------
-*/
+
+
+        /* saldo disponível*/
 
         // soma o saldo acumulado dos meses anteriores ao resultado financeiro do mês selecionado
         $balance = $previousBalance + $monthBalance;
